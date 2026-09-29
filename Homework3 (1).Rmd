@@ -1,0 +1,256 @@
+---
+title: "Homework 3"
+author: "Teagan Petek"
+date: "2026-09-18"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+### **Instructions**
+
+Use functions learned from the tidyverse package to complete this homework assignment. Load all the packages you will use throughout this homework in the loading packages section below. 
+
+
+For Exercise 2, you will use the `Lahman` package. Please install the package `install.packages("Lahman")` in your **console**, then load the package in the loading packages section below. 
+
+
+For Exercise 3, you will use the `nycflights13` package. Please install the package `install.packages("nycflights13")` in your **console**, then load the package in the loading packages section below. 
+
+
+Submit the html file in Sakai before the deadline.
+
+
+### **Loading Packages**
+
+(5 points)
+
+```{r packages, message=FALSE, warning = FALSE}
+library(nycflights13)
+library(tidyverse)
+library(Lahman)
+library(dplyr)
+library(readr)
+```
+
+
+### **Exercise 1**
+
+(30 points) Using the `cubs_all_time` dataset found in the data folder. Answer the following questions:
+
+
+a) Read in the csv file and name the dataframe `cubs_all_time`. 
+
+```{r ex1a, message = FALSE}
+
+
+cubs_all_time<-read_csv("//apporto.com/dfs/LUC/Users/tpetek_luc/Downloads/cubs_all_time (1).csv")
+
+
+
+
+```
+
+b) How many total games have the Cubs won between 1876 and 2022 (inclusive) and how many total games have the Cubs lost between 1876 and 2022 (inclusive)? ***Your final output should be a printed dataframe that has two columns reflecting these two numbers.***
+
+```{r ex1b, message = FALSE}
+  table(cubs_all_time$W)
+  table(cubs_all_time$L)
+  table(cubs_all_time$W & cubs_all_time$L)
+
+
+
+```
+
+c) What year did the Cubs score the most runs? What year did the Cubs score the fewest runs? Do you have any thoughts about the year that the Cubs scored the fewest runs? ***Your final output should be a printed dataframe that has two columns and two rows. The two columns are years and the number of runs. One row should represent the year with the most runs, and another should represent the year with the fewest runs***
+
+*YOUR WRITTEN ANSWER HERE*
+Most runs: 1894
+Least runs: 2020
+```{r ex1c, message = FALSE}
+question1c<-cubs_all_time%>%
+  summarise(result = Year[which.max(R)])
+
+question1cb<-cubs_all_time%>%
+  summarise(results = Year[which.min(R)])
+
+question1c
+question1cb
+
+```
+Maybe the scored the least runs that year because it was COVID so the season was shorter?
+
+
+
+d) In how many seasons was the Cubs total attendance (i.e. the variable Attendance) over 3 million? ***Your final output should be a printed dataframe that has one column and one row representing the number of seasons.***
+
+
+```{r ex1d, message = FALSE}
+example_1<-cubs_all_time %>%
+  filter(Attendance > 3000000)
+
+example_1
+
+```
+12 times
+
+
+e) In the years between 1982 and 2000 (inclusive), what was the greatest ratio of runs for (R) to runs against (RA) in a single season? ***Your final output should be a printed dataframe that has one column and one row representing the greatest ratio.***
+
+```{r ex1e, message = FALSE}
+question1e<-cubs_all_time%>%
+  filter (Year> 1981 & Year<2001)%>%
+  summarise(results = Year[which.max(R/RA)])
+
+question1e
+
+
+```
+1984 had the greatest run and runs against ratio between 1982 and 2000
+
+
+### **Exercise 2**
+
+(18 points) The data you will use in this exercise is called `Teams` and you will find it inside the `Lahman` package. Make sure you load the package in the "Loading Packages" section. To put this dataset in your environment simply type `data("Teams")` in your codes. Use `?Teams` or `help(Teams)` in your console to get a description of this data. 
+
+a) Read in the data directly from the package. 
+
+```{r ex2a, message = FALSE}
+df2<-read_csv("//apporto.com/dfs/LUC/Users/tpetek_luc/Downloads/Teams.csv")
+
+
+```
+b) Create a dataframe that is a subset of the `Teams` dataframe that contains only the years from 2000 through 2009 (inclusive) and the variables yearID, W, and L. ***DO NOT print your dataframe.***
+
+```{r ex2b, message = FALSE}
+question2b<- df2 %>%
+  filter(yearID > 1999 & yearID < 2010)%>%
+  select(yearID, W, L)
+ 
+question2b
+
+
+```
+
+
+c) How many years did the Chicago Cubs (teamID is "CHN") hit at least 200 HRs in a season and what was the median number of wins in those seasons (the seasons with at least 200 HRs). ***Your final output should be a printed dataframe that has two columns representing the number of seasons and the median number of wins.***
+
+
+```{r ex2c, message = FALSE}
+question2c<- df2%>%
+  filter(HR> 199)%>%
+  filter(teamID=="CHN")
+
+as.numeric<-question2c
+
+
+```
+7 years they hit at least 200 HR. 
+There are 7 rows in the data set, so 7 years that the Chicago Cubs had above 200 HR
+
+
+### **Exercise 3**
+
+(23 points) The data you will use in this exercise is called `flights` and you will find it inside the `nycflights13` package. Make sure you load the package in the "Loading Packages" section. To put this dataset in your environment simply type `data("flights")` in your codes. Use `?flights` or `help(flights)` to get a description of this data.
+  
+a) Read in the data directly from the package. 
+
+```{r ex3a, message = FALSE}
+df3<-data(flights)
+
+
+```
+
+b) What month of the year had the highest average time of departure delayed flights (the variable is `dep_delay`) and what is the value of this average? ***Your final output should be a printed dataframe that has two columns representing the month and the average time of departure. The final dataframe must only contain one row showing the month with the respective average delay.***
+
+```{r ex3b, message = FALSE}
+question3b<- flights %>%
+ summarize(results = month[which.max(dep_delay)])
+
+question3b 
+
+question3bmedian<- flights%>%
+  filter(month==1)%>%
+  median(dep_delay)
+  
+
+
+ 
+```
+January has the highest average delayed departure of flights
+
+
+c) Which origin airport has the highest proportion of delayed flights leaving? 
+Note: a flight is considered delayed if the departure delayed time (use variable `dep_delay`) is greater than 0 minutes, otherwise (including missing values) it is not delayed. ***Your final output should be a printed dataframe that has two columns representing the origin airport and the proportion of delayed departure flights. The final dataframe must only contain one row showing the highest proportion.***
+
+
+```{r ex3c, message = FALSE}
+question3c<- flights%>%
+  summarize(results = origin[which.max(dep_delay)])
+
+question3c
+
+
+
+
+```
+JFK has the highest proportion of delated flights leaving
+
+
+### **Exercise 4**
+
+(24 points) Using the `top_colleges_2022` dataset (in your data folder), answer the following questions:
+
+a) Read in the csv file and name the dataframe `college`. 
+
+```{r ex4a, message = FALSE}
+college<- read_csv("//apporto.com/dfs/LUC/Users/tpetek_luc/Downloads/top_colleges_2022.csv")
+
+
+```
+
+b) How many colleges in this data set are in Illinois. ***Your final output should be a printed dataframe that has two columns and one row reflecting the name of the state  and the number of colleges in Illinois.***
+
+```{r ex4b, message = FALSE}
+question4b<-college%>%
+  filter(stateCode=="IL")
+
+question4b
+
+```
+16 colleges in IL
+
+
+c) Find the undergraduate student population of LUC. (Note: undergraduate student population is represented by the variable `undergradPop`). ***Your final output should be a printed dataframe that has two columns and one row reflecting the name of the university and the number of undergraduate students.***
+
+
+```{r ex4c, message = FALSE}
+question4c<- college%>%
+  filter(organizationName=="Loyola University Chicago")%>%
+  select(undergradPop)
+ 
+question4c
+
+```
+The undergrad population is 13878
+
+
+d) Using the value obtained in part (c), how many colleges have an undergraduate student population larger than LUC? ***Your final output should be a printed dataframe that has one column and one row reflecting the number of colleges that have a larger undergraduate student population than LUC.***
+There are 168 universities with undergrad populations more than the LUC undergrad population
+
+```{r ex4d, message = FALSE}
+question4d<-college%>%
+  filter(undergradPop>13878)%>%
+  select(organizationName)
+
+question4d
+
+
+
+```
+168 colleges have an undergrad population larger than Loyola Chicago's
+
